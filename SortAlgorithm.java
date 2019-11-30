@@ -3,7 +3,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class SortAlgorithm<T extends Comparable<T>>{
-    String[] sort_type = {"bubble", "select", "insert", "shell", "quick"};
+    String[] sort_type = {"bubble", "select", "insert", "shell", "quick", "localMerge", "heap"};
     String[] seq_type = {"Asc", "Desc"};
 
     public boolean sort(T[] array, String type, String seq){
@@ -32,9 +32,16 @@ public class SortAlgorithm<T extends Comparable<T>>{
                 case "quick":
                     quickAscSort(array, 0, array.length-1);
                     break;
+                case "localMerge":
+                    localMergeAscSort(array, 0, array.length-1);
+                    break;
+                case "heap":
+                    heapAscSort(array);
+                    break;
             }
 
         }
+        System.out.print(type+": ");
         print(array);
         return true;
     }
@@ -126,6 +133,57 @@ public class SortAlgorithm<T extends Comparable<T>>{
         return array;
     }
 
+    public int[] mergeAscSort(int[] array, int left, int right){
+        if(left==right){
+            return new int[]{array[left]};
+        }
+        int mid = (left + right) / 2;
+        int[] leftArr = mergeAscSort(array, left, mid);
+        int[] rightArr = mergeAscSort(array, mid+1, right);
+        int[] newArr = new int[leftArr.length+rightArr.length];
+
+        int m = 0, i = 0, j = 0; 
+        while (i < leftArr.length && j < rightArr.length) {
+            newArr[m++] = leftArr[i] < rightArr[j] ? leftArr[i++] : rightArr[j++];
+        }
+        while (i < leftArr.length)
+            newArr[m++] = leftArr[i++];
+        while (j < rightArr.length)
+            newArr[m++] = rightArr[j++];
+
+        return newArr;
+    }
+
+    private void localMergeAscSort(T[] array, int left, int right){
+        if(left>=right) return;
+        int mid = (left+right)/2;
+        localMergeAscSort(array, left, mid);
+        localMergeAscSort(array, mid+1, right);
+
+        int i=left, j=mid+1, step;
+        while(i<j && j<=right){
+            System.out.println("run");
+            step=0;
+            while(i<j && (array[i].compareTo(array[j])<=0)) i++;
+            while(j<=right && (array[j].compareTo(array[i])<=0)){
+                j++;
+                step++;
+            }
+            reverse(array, i, j-1);
+            reverse(array, i, i+step-1);
+            reverse(array, i+step, j-1);
+            i+=step;
+        }
+    }
+
+    private void reverse(T[] array, int left, int right){
+        for(int i=left,j=right;i<j;i++,j--){
+            T tmp = array[i];
+            array[i] = array[j];
+            array[j] = tmp;
+        }
+    }
+
     private void quickAscSort(T[] array, int left, int right){
         if(left>=right){
             return;
@@ -150,7 +208,52 @@ public class SortAlgorithm<T extends Comparable<T>>{
         }
         if(p-1>left){
             quickAscSort(array, left, p-1);
+        }  
+    }
+
+    //the feature of complete binary tree in array: lchild_loc = father_loc * 2 + 1, rchild_loc = father_loc * 2 + 2
+    private void heapify(T[] array, int currentRootNode, int size){
+        if(currentRootNode<size){
+            int left = currentRootNode*2+1, right=currentRootNode*2+2;
+            int max=currentRootNode;
+
+            if(left<size){
+                if(array[left].compareTo(array[max])>0){
+                    max = left;
+                }
+            }
+            if(right<size){
+                if(array[right].compareTo(array[max])>0){
+                    max = right;
+                }
+            }
+
+            if(max!=currentRootNode){
+                T tmp = array[max];
+                array[max] = array[currentRootNode];
+                array[currentRootNode] = tmp;
+
+                heapify(array, max, size);
+            }
         }
-        
+    }
+
+    private void heapAscSort(T[] array){
+        for(int i=0;i<array.length;i++){
+            if(i==0){
+                //first time, you can create a heap, O(n)
+                for(int j=array.length-1-i;j>=0;j--){
+                    heapify(array, j, array.length);
+                }
+            }
+            else{
+                //you only have to adjust from the top of heap, O(log(n))
+                heapify(array, 0, array.length-i);
+            }
+
+            T tmp = array[0];
+            array[0] = array[array.length-1-i];
+            array[array.length-1-i] = tmp;
+        }
     }
 }
