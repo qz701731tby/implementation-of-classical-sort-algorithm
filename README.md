@@ -6,3 +6,5 @@ You can directly use the sort Algorithm the same way as in the testfile. This su
 SortAlgorithm.sort(array, sort_type, seq)
 
 SortAlgorithm.sort(array, "quick", "Asc")
+
+SortAlgorithm.sort(array, "insert", "Desc")
