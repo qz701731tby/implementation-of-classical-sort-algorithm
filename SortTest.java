@@ -1,13 +1,13 @@
 public class SortTest{
     public static void main(String[] args) {
-        Integer[] array = {2,1,4,3,8,7,5,20,16,13,14,11,16,14};
-        SortAlgorithm<Integer> sortAlgorithm = new SortAlgorithm<Integer>();
-        sortAlgorithm.print_sort_type();
-        sortAlgorithm.sort(array, "heap", "Asc");
+        Integer[] int_array = {2,1,4,3,8,7,5,20,16,13,14,11,16,14};
+        String[] str_array = {"a","b","z","k","e","d","f","m","g","o","q","n"};
+        SortAlgorithm<Integer> sortAlgorithm_int = new SortAlgorithm<Integer>();
+        sortAlgorithm_int.print_sort_type();
+        sortAlgorithm_int.sort(int_array, "insert", "Desc");
+
+        SortAlgorithm<String> sortAlgorithm_str = new SortAlgorithm<String>();
+        sortAlgorithm_str.sort(str_array, "insert", "Asc");
         
-        // int[] newArr = sortAlgorithm.mergeAscSort(array, 0, array.length-1);
-        // for(int i=0;i<newArr.length;i++){
-        //     System.out.print(String.valueOf(newArr[i])+" ");
-        // }
     }
 }
