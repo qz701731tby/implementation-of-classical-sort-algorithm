@@ -18,54 +18,31 @@ public class SortAlgorithm<T extends Comparable<T>>{
         int flag = seq.equals("Asc")?1:-1;
         switch(type){
             case "bubble":
-                bubbleAscSort(array, flag);
+                bubbleSort(array, flag);
                 break;
             case "select":
-                selectAscSort(array, flag);
+                selectSort(array, flag);
                 break;
             case "insert":
-                insertAscSort(array, flag);
+                insertSort(array, flag);
                 break;
             case "shell":
-                shellAscSort(array, flag);
+                shellSort(array, flag);
                 break;
             case "quick":
-                quickAscSort(array, 0, array.length-1, flag);
+                quickSort(array, 0, array.length-1, flag);
                 break;
             case "localMerge":
-                localMergeAscSort(array, 0, array.length-1, flag);
+                localMergeSort(array, 0, array.length-1, flag);
                 break;
             case "heap":
-                heapAscSort(array, flag);
+                heapSort(array, flag);
                 break;
         }
-        // if(seq.equals("Asc")){
-        //     switch(type){
-        //         case "bubble":
-        //             bubbleAscSort(array, 1);
-        //             break;
-        //         case "select":
-        //             selectAscSort(array, 1);
-        //             break;
-        //         case "insert":
-        //             insertAscSort(array, 1);
-        //             break;
-        //         case "shell":
-        //             shellAscSort(array, 1);
-        //             break;
-        //         case "quick":
-        //             quickAscSort(array, 0, array.length-1, 1);
-        //             break;
-        //         case "localMerge":
-        //             localMergeAscSort(array, 0, array.length-1, 1);
-        //             break;
-        //         case "heap":
-        //             heapAscSort(array, 1);
-        //             break;
-        //     }
-        // }
+
         System.out.print(type+": ");
         print(array);
+   
         return true;
     }
 
@@ -91,7 +68,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         System.out.println();
     }
 
-    private T[] bubbleAscSort(T[] array, int flag){
+    private T[] bubbleSort(T[] array, int flag){
         for(int i=0;i<array.length;i++){
             for(int j=0;j<i;j++){
                 if((array[j].compareTo(array[j+1]))*flag>0){
@@ -105,7 +82,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         return array;
     }
 
-    private T[] selectAscSort(T[] array, int flag){
+    private T[] selectSort(T[] array, int flag){
         for(int i=0;i<array.length;i++){
             int max_index=0;
             for(int j=0;j<array.length-i;j++){
@@ -122,7 +99,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         return array;
     }
 
-    private T[] insertAscSort(T[] array, int flag){
+    private T[] insertSort(T[] array, int flag){
         for(int i=0;i<array.length;i++){
             T tmp = array[i];
             int j = i-1;
@@ -135,7 +112,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         return array;
     }
 
-    private T[] shellAscSort(T[] array, int flag){
+    private T[] shellSort(T[] array, int flag){
         int increase = (array.length/2);
         while(increase>0){
             for(int i=0;i<increase;i++){
@@ -177,11 +154,11 @@ public class SortAlgorithm<T extends Comparable<T>>{
         return newArr;
     }
 
-    private void localMergeAscSort(T[] array, int left, int right, int flag){
+    private void localMergeSort(T[] array, int left, int right, int flag){
         if(left>=right) return;
         int mid = (left+right)/2;
-        localMergeAscSort(array, left, mid, flag);
-        localMergeAscSort(array, mid+1, right, flag);
+        localMergeSort(array, left, mid, flag);
+        localMergeSort(array, mid+1, right, flag);
 
         int i=left, j=mid+1, step;
         while(i<j && j<=right){
@@ -207,7 +184,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         }
     }
 
-    private void quickAscSort(T[] array, int left, int right, int flag){
+    private void quickSort(T[] array, int left, int right, int flag){
         if(left>=right){
             return;
         }
@@ -227,10 +204,10 @@ public class SortAlgorithm<T extends Comparable<T>>{
         }
         array[p] = pivotKey;
         if(p+1<right){
-            quickAscSort(array, p+1, right, flag);
+            quickSort(array, p+1, right, flag);
         }
         if(p-1>left){
-            quickAscSort(array, left, p-1, flag);
+            quickSort(array, left, p-1, flag);
         }  
     }
 
@@ -261,7 +238,7 @@ public class SortAlgorithm<T extends Comparable<T>>{
         }
     }
 
-    private void heapAscSort(T[] array, int flag){
+    private void heapSort(T[] array, int flag){
         for(int i=0;i<array.length;i++){
             if(i==0){
                 //first time, you can create a heap, O(n)
@@ -278,5 +255,71 @@ public class SortAlgorithm<T extends Comparable<T>>{
             array[0] = array[array.length-1-i];
             array[array.length-1-i] = tmp;
         }
+    }
+
+    public void bucketSort(int[] array, int bucket_num, String flag){
+        int n=array.length;
+        int[][] buckets = new int[bucket_num][n];
+        int[] index = new int[bucket_num];
+        int max=Integer.MIN_VALUE;
+        int min=Integer.MAX_VALUE;
+        for(int i=0;i<n;i++){
+            min = Math.min(array[i], min);
+            max = Math.max(array[i], max);
+        }
+        int gap = (max-min)/bucket_num + 1;
+        //System.out.println(gap);
+        for(int i=0;i<n;i++){
+            int tmp_index = (int)Math.floor((array[i]-min)/gap);
+            buckets[tmp_index][index[tmp_index]++] = array[i];
+        }
+
+        // use quickSort for each buckets
+        for(int i=0;i<bucket_num;i++){
+            quickSortForBucket(buckets[i], 0, index[i]-1, flag);
+        }
+
+        int idx=0;
+        for(int i=0;i<bucket_num;i++){
+            for(int j=0;j<index[i];j++){
+                array[idx++] = buckets[i][j];
+            }
+        }
+        
+        System.out.print("bucket: ");
+        for(int i=0;i<array.length;i++){
+            System.out.print(array[i]);
+            System.out.print(" ");
+        }
+        System.out.println();
+
+    }
+
+    private void quickSortForBucket(int[] array, int left, int right, String flag){
+        if(left>=right){
+            return;
+        }
+        int pivotKey = array[left];
+        int l=left, r=right, p=left;
+        //boolean b_flag = (flag=="Asc")?true:false;
+        while(l<=r){
+            while((r>=p)&&(array[r]>=pivotKey)) r--;
+            if(r>=p){
+                array[p] = array[r];
+                p = r;
+            }
+            while((l<=p)&&(array[l]<=pivotKey)) l++;
+            if(l<=p){
+                array[p] = array[l];
+                p = l;
+            }
+        }
+        array[p] = pivotKey;
+        if(p+1<right){
+            quickSortForBucket(array, p+1, right, flag);
+        }
+        if(p-1>left){
+            quickSortForBucket(array, left, p-1, flag);
+        }  
     }
 }

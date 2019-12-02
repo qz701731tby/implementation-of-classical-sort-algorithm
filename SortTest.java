@@ -9,5 +9,7 @@ public class SortTest{
         SortAlgorithm<String> sortAlgorithm_str = new SortAlgorithm<String>();
         sortAlgorithm_str.sort(str_array, "insert", "Asc");
         
+        int[] array = {2,1,4,3,8,7,5,20,16,13,14,11,16,14};
+        sortAlgorithm_int.bucketSort(array, 5, "Asc");
     }
 }
